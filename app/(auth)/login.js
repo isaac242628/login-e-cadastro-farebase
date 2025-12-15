@@ -51,18 +51,15 @@ export default function LoginScreen() {
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <StatusBar style="light" />
 
-      {/* Nike Logo */}
       <View style={styles.logoContainer}>
         <Image source={{ uri: "/nike-swoosh-logo-white.jpg" }} style={styles.logo} resizeMode="contain" />
       </View>
 
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Bem-vindo de volta</Text>
         <Text style={styles.subtitle}>Entre na sua conta Nike</Text>
       </View>
 
-      {/* Form */}
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -90,14 +87,12 @@ export default function LoginScreen() {
           <Text style={styles.buttonText}>{loading ? "Entrando..." : "ENTRAR"}</Text>
         </TouchableOpacity>
 
-        {/* Divider */}
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
           <Text style={styles.dividerText}>ou</Text>
           <View style={styles.dividerLine} />
         </View>
 
-        {/* Register Link */}
         <View style={styles.registerContainer}>
           <Text style={styles.registerText}>Não tem uma conta? </Text>
           <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
