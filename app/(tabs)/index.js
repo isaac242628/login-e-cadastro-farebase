@@ -1,48 +1,70 @@
-import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, SafeAreaView } from "react-native"
-import { StatusBar } from "expo-status-bar"
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import api from "../../config/api";
 
-const PRODUCTS = [
-  {
-    id: "1",
-    name: "Air Max 270",
-    category: "Tênis Masculino",
-    price: "R$ 899,99",
-    image: "/nike-air-max-270-sneaker.jpg",
-  },
-  {
-    id: "2",
-    name: "Air Force 1",
-    category: "Tênis Feminino",
-    price: "R$ 799,99",
-    image: "/nike-air-force-1-white-sneaker.jpg",
-  },
-  {
-    id: "3",
-    name: "Dri-FIT",
-    category: "Camiseta Esportiva",
-    price: "R$ 199,99",
-    image: "/nike-dri-fit-black-shirt.jpg",
-  },
-  {
-    id: "4",
-    name: "Jordan 1",
-    category: "Tênis Masculino",
-    price: "R$ 1.299,99",
-    image: "/air-jordan-1-sneaker.jpg",
-  },
-]
+const response = await api.get("/produtos");
+setProducts(response.data);
+
 
 export default function HomeScreen() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function carregarProdutos() {
+      try {
+        const response = await api.get("/produtos");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarProdutos();
+  }, []);
+
   const renderProduct = ({ item }) => (
     <TouchableOpacity style={styles.productCard}>
-      <Image source={{ uri: item.image }} style={styles.productImage} />
+      <Image
+        source={{
+          uri: `https://apiprodutosnike.webapptech.site${item.imagem}`,
+        }}
+          style={styles.productImage}
+      />
+
       <View style={styles.productInfo}>
-        <Text style={styles.productCategory}>{item.category}</Text>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>{item.price}</Text>
+        <Text style={styles.productdescricao}>{item.descricao}</Text>
+        <Text style={styles.productnome}>{item.nome}</Text>
+        <Text style={styles.productpreco}>
+          R$ {Number(item.preco).toFixed(2)}
+        </Text>
       </View>
     </TouchableOpacity>
-  )
+  );
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator
+          size="large"
+          color="#fff"
+          style={{ marginTop: 50 }}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,13 +72,19 @@ export default function HomeScreen() {
 
       {/* Header */}
       <View style={styles.header}>
-        <Image source={{ uri: "/nike-swoosh-logo-white.jpg" }} style={styles.logo} resizeMode="contain" />
+        <Image
+          source={{
+            uri: "https://rabbitlogo.com/wp-content/uploads/2025/06/nike-logo-800x450.jpg",
+          }}
+          style={styles.logo}
+          resizeMode="contain"
+        />
         <TouchableOpacity>
           <Text style={styles.cartIcon}>🛒</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>Just Do It</Text>
         <Text style={styles.heroSubtitle}>Novos lançamentos Nike</Text>
@@ -64,15 +92,15 @@ export default function HomeScreen() {
 
       {/* Products */}
       <FlatList
-        data={PRODUCTS}
+        data={products}
         renderItem={renderProduct}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         contentContainerStyle={styles.productList}
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -130,18 +158,18 @@ const styles = StyleSheet.create({
   productInfo: {
     padding: 12,
   },
-  productCategory: {
+  productdescricao: {
     fontSize: 12,
     color: "#999",
     marginBottom: 4,
   },
-  productName: {
+  productnome: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 8,
   },
-  productPrice: {
+  productpreco: {
     fontSize: 14,
     color: "#fff",
     fontWeight: "600",
