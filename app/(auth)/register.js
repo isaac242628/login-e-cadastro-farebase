@@ -66,18 +66,15 @@ export default function RegisterScreen() {
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <StatusBar style="light" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Nike Logo */}
         <View style={styles.logoContainer}>
           <Image source={{ uri: "/nike-swoosh-logo-white.jpg" }} style={styles.logo} resizeMode="contain" />
         </View>
 
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Junte-se a nós</Text>
           <Text style={styles.subtitle}>Crie sua conta Nike</Text>
         </View>
 
-        {/* Form */}
         <View style={styles.form}>
           <TextInput
             style={styles.input}
@@ -126,20 +123,17 @@ export default function RegisterScreen() {
             <Text style={styles.buttonText}>{loading ? "Criando conta..." : "CADASTRAR"}</Text>
           </TouchableOpacity>
 
-          {/* Terms */}
           <Text style={styles.terms}>
             Ao cadastrar, você concorda com os <Text style={styles.termsLink}>Termos de Uso</Text> e{" "}
             <Text style={styles.termsLink}>Política de Privacidade</Text>
           </Text>
 
-          {/* Divider */}
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
             <Text style={styles.dividerText}>ou</Text>
             <View style={styles.dividerLine} />
           </View>
 
-          {/* Login Link */}
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Já tem uma conta? </Text>
             <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
