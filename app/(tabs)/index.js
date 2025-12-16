@@ -7,63 +7,56 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ActivityIndicator,
-} from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import api from "../../config/api";
-
-const response = await api.get("/produtos");
-setProducts(response.data);
-
+} from "react-native"
+import { StatusBar } from "expo-status-bar"
+import { useEffect, useState } from "react"
 
 export default function HomeScreen() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function carregarProdutos() {
+    async function fetchProducts() {
       try {
-        const response = await api.get("/produtos");
-        setProducts(response.data);
+        const response = await fetch(
+          "https://apiprodutosnike.webapptech.site/api/produtos"
+        )
+        const data = await response.json()
+        setProducts(data)
       } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
+        console.error("Erro ao buscar produtos:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    carregarProdutos();
-  }, []);
+    fetchProducts()
+  }, [])
 
   const renderProduct = ({ item }) => (
     <TouchableOpacity style={styles.productCard}>
       <Image
         source={{
-          uri: `https://apiprodutosnike.webapptech.site${item.imagem}`,
+          uri: `https://apiprodutosnike.webapptech.site${item.image}`,
         }}
-          style={styles.productImage}
+        style={styles.productImage}
       />
-
       <View style={styles.productInfo}>
-        <Text style={styles.productdescricao}>{item.descricao}</Text>
-        <Text style={styles.productnome}>{item.nome}</Text>
-        <Text style={styles.productpreco}>
-          R$ {Number(item.preco).toFixed(2)}
+        <Text style={styles.productCategory}>{item.category}</Text>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productPrice}>
+          R$ {Number(item.price).toFixed(2)}
         </Text>
       </View>
     </TouchableOpacity>
-  );
+  )
 
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator
-          size="large"
-          color="#fff"
-          style={{ marginTop: 50 }}
-        />
+        <ActivityIndicator size="large" color="#fff" style={{ marginTop: 50 }} />
       </SafeAreaView>
-    );
+    )
   }
 
   return (
@@ -74,7 +67,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Image
           source={{
-            uri: "https://rabbitlogo.com/wp-content/uploads/2025/06/nike-logo-800x450.jpg",
+            uri: "https://rabbitlogo.com/wp-content/uploads/2025/06/nike-logo-800x450.jp",
           }}
           style={styles.logo}
           resizeMode="contain"
@@ -84,7 +77,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Hero */}
+      {/* Hero Section */}
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>Just Do It</Text>
         <Text style={styles.heroSubtitle}>Novos lançamentos Nike</Text>
@@ -100,8 +93,9 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
-  );
+  )
 }
+
 
 const styles = StyleSheet.create({
   container: {
