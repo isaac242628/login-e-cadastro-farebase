@@ -1,21 +1,56 @@
-# Nike App - React Native + Expo + Firebase
+# Nike App - React Native + Expo
 
-Aplicativo de autenticação com tema Nike desenvolvido em React Native usando Expo e Firebase Authentication.
+Aplicativo Nike desenvolvido com React Native, Expo Router, e Firebase Authentication, consumindo a API de produtos Nike.
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
-- ✅ Login com email e senha
-- ✅ Cadastro de novos usuários
-- ✅ Autenticação persistente com AsyncStorage
-- ✅ Navegação protegida (rotas autenticadas)
-- ✅ Tema Nike (preto, branco e cinza)
-- ✅ Tela de produtos
-- ✅ Tela de perfil do usuário
+- Autenticação com Firebase (Login e Registro)
+- Listagem de produtos Nike da API
+- Visualização detalhada de produtos
+- Navegação por tabs (Produtos e Perfil)
+- Design moderno inspirado na Nike
 
-## 🏃 Executando o App
+## Tecnologias
 
-\`\`\`bash
-# Iniciar o Expo
+- **React Native** - Framework para desenvolvimento mobile
+- **Expo** (~52.0.0) - Plataforma para desenvolvimento React Native
+- **Expo Router** (~4.0.0) - Navegação baseada em sistema de arquivos
+- **Firebase** (^10.13.0) - Autenticação de usuários
+- **AsyncStorage** - Persistência de dados local
+
+## Pré-requisitos
+
+- Node.js (v18 ou superior)
+- npm ou yarn
+- Expo CLI (instalado globalmente)
+- Expo Go app no seu dispositivo móvel (iOS ou Android)
+
+## Instalação
+
+1. Clone o repositório:
+```bash
+git clone <seu-repositorio>
+cd nike-app-expo
+```
+
+2. Instale as dependências:
+```bash
+npm install
+# ou
+yarn install
+```
+
+3. Configure o Firebase:
+   - Crie um projeto no [Firebase Console](https://console.firebase.google.com/)
+   - Ative o Authentication com Email/Password
+   - Copie as credenciais para `config/firebase.js`
+
+## Executando o Projeto
+
+### Desenvolvimento
+
+```bash
+# Iniciar o servidor Expo
 npm start
 
 # Executar no Android
@@ -23,79 +58,114 @@ npm run android
 
 # Executar no iOS
 npm run ios
+```
 
-# Executar na Web
-npm run web
-\`\`\`
+### Testando no Dispositivo
 
-Escaneie o QR Code com o app **Expo Go** no seu celular ou use um emulador.
+1. Instale o **Expo Go** no seu dispositivo
+2. Execute `npm start`
+3. Escaneie o QR Code com a câmera (iOS) ou Expo Go (Android)
 
-## 📁 Estrutura de Pastas
+## Estrutura do Projeto
 
-\`\`\`
+```
+nike-app-expo/
 ├── app/
-│   ├── (auth)/
-│   │   ├── login.js          # Tela de login
-│   │   ├── register.js       # Tela de cadastro
-│   │   └── _layout.js        # Layout das rotas de autenticação
-│   ├── (tabs)/
-│   │   ├── index.js          # Tela principal (produtos)
-│   │   ├── profile.js        # Tela de perfil
-│   │   └── _layout.js        # Layout com tabs
-│   └── _layout.js            # Layout raiz (proteção de rotas)
+│   ├── (auth)/              # Grupo de autenticação
+│   │   ├── _layout.js       # Layout do grupo de auth
+│   │   ├── login.js         # Tela de login
+│   │   └── register.js      # Tela de registro
+│   ├── (tabs)/              # Grupo de tabs
+│   │   ├── _layout.js       # Layout dos tabs
+│   │   ├── index.js         # Tela de produtos (home)
+│   │   ├── profile.js       # Tela de perfil
+│   │   └── product/[id].js  # Tela de detalhes do produto
+│   ├── _layout.js           # Layout raiz
+│   └── index.js             # Ponto de entrada
 ├── config/
-│   └── firebase.js           # Configuração do Firebase
-├── public/                   # Imagens do app
-└── package.json
-\`\`\`
+│   ├── api.js               # Configuração da API
+│   └── firebase.js          # Configuração do Firebase
+├── services/
+│   └── api.js               # Serviços de API
+├── hooks/
+│   └── useProducts.js       # Hook customizado para produtos
+├── app.json                 # Configuração do Expo
+├── babel.config.js          # Configuração do Babel
+└── package.json             # Dependências do projeto
+```
 
-## 🎨 Design
+## API
 
-O app segue o design system da Nike:
-- **Cores**: Preto (#000), Branco (#FFF), Cinza (#999, #666, #333)
-- **Tipografia**: Sans-serif bold para títulos
-- **Estilo**: Minimalista, clean, focado no produto
+A aplicação consome a API de produtos Nike:
 
-## 🔐 Segurança
+**Endpoint:** `https://apiprodutosnike.webapptech.site/api/produtos`
 
-- Senhas devem ter no mínimo 6 caracteres
-- Autenticação gerenciada pelo Firebase
-- Tokens armazenados de forma segura com AsyncStorage
+**Resposta:**
+```json
+[
+  {
+    "id": 1,
+    "nome": "Nike Air Max",
+    "descricao": "Tênis esportivo",
+    "preco": "499.90",
+    "imagem": "/images/produto.jpg"
+  }
+]
+```
 
-## 📱 Funcionalidades Implementadas
+## Funcionalidades Principais
 
 ### Autenticação
-- Login com validação de campos
-- Cadastro com confirmação de senha
-- Logout com confirmação
-- Proteção de rotas (redirecionamento automático)
+- Login com email e senha
+- Registro de novos usuários
+- Persistência de sessão
+- Logout
 
-### Navegação
-- Stack Navigator para autenticação
-- Bottom Tabs para app principal
-- Redirecionamento automático baseado no estado de autenticação
+### Produtos
+- Listagem em grid 2 colunas
+- Carregamento assíncrono
+- Imagens otimizadas
+- Navegação para detalhes
 
-## 🛠️ Tecnologias
+### Perfil
+- Informações do usuário
+- Menu de opções
+- Logout seguro
 
-- React Native
-- Expo
-- Expo Router
-- Firebase Authentication
-- AsyncStorage
-- Expo Vector Icons
+## Customização
 
-## 🐛 Troubleshooting
+### Cores e Estilos
+As cores principais do app seguem a identidade Nike:
+- Fundo: `#000` (Preto)
+- Texto: `#fff` (Branco)
+- Cards: `#1a1a1a` (Cinza escuro)
+- Bordas: `#333` (Cinza)
 
-### Erro: "Cannot find module 'firebase'"
-\`\`\`bash
-npm install firebase
-\`\`\`
+### Firebase
+Para usar seu próprio Firebase, edite `config/firebase.js` com suas credenciais.
 
-### Erro: "AsyncStorage is not defined"
-\`\`\`bash
-npm install @react-native-async-storage/async-storage
-\`\`\`
+## Troubleshooting
 
-## 📄 Licença
+### Erro ao executar no iOS
+```bash
+cd ios && pod install && cd ..
+```
 
-Este é um projeto de demonstração para fins educacionais.
+### Erro de cache
+```bash
+npx expo start -c
+```
+
+### Erro de dependências
+```bash
+rm -rf node_modules
+npm install
+```
+
+## Licença
+
+MIT
+
+## Contato
+
+Para dúvidas ou sugestões, abra uma issue no repositório.

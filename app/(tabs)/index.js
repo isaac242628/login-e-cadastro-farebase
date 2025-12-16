@@ -1,3 +1,5 @@
+"use client"
+
 import {
   View,
   Text,
@@ -9,44 +11,34 @@ import {
   ActivityIndicator,
 } from "react-native"
 import { StatusBar } from "expo-status-bar"
-import { useEffect, useState } from "react"
+import { useRouter } from "expo-router"
+import useProducts from "../../hooks/useProducts"
+import ProductService from "../../services/api"
 
 export default function HomeScreen() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { products, loading, error, refetch } = useProducts()
+  const router = useRouter()
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await fetch(
-          "https://apiprodutosnike.webapptech.site/api/produtos"
-        )
-        const data = await response.json()
-        setProducts(data)
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchProducts()
-  }, [])
+  console.log("[v0] HomeScreen render - products count:", products?.length || 0)
+  console.log("[v0] Loading:", loading, "Error:", error)
 
   const renderProduct = ({ item }) => (
-    <TouchableOpacity style={styles.productCard}>
+    <TouchableOpacity style={styles.productCard} onPress={() => router.push(`/product/${item.id}`)}>
       <Image
         source={{
-          uri: `https://apiprodutosnike.webapptech.site${item.image}`,
+          uri: ProductService.getImageUrl(item.imagem),
         }}
-        style={styles.productImage}
+        style={styles.productimagem}
+        resizeMode="cover"
       />
       <View style={styles.productInfo}>
-        <Text style={styles.productCategory}>{item.category}</Text>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>
-          R$ {Number(item.price).toFixed(2)}
+        <Text style={styles.productdescricao} numberOfLines={1}>
+          {item.descricao}
         </Text>
+        <Text style={styles.productnome} numberOfLines={2}>
+          {item.nome}
+        </Text>
+        <Text style={styles.productpreco}>R$ {Number(item.preco).toFixed(2)}</Text>
       </View>
     </TouchableOpacity>
   )
@@ -54,7 +46,44 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#fff" style={{ marginTop: 50 }} />
+        <View style={styles.header}>
+          <Image
+            source={{
+              uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
+            }}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={{ color: "#999", marginTop: 16 }}>Carregando produtos...</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Image
+            source={{
+              uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
+            }}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20 }}>
+          <Text style={{ color: "#fff", fontSize: 18, marginBottom: 16, textAlign: "center" }}>
+            Erro ao carregar produtos
+          </Text>
+          <Text style={{ color: "#999", marginBottom: 24, textAlign: "center" }}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={refetch}>
+            <Text style={styles.retryText}>Tentar novamente</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     )
   }
@@ -67,7 +96,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Image
           source={{
-            uri: "https://rabbitlogo.com/wp-content/uploads/2025/06/nike-logo-800x450.jp",
+            uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
           }}
           style={styles.logo}
           resizeMode="contain"
@@ -84,18 +113,23 @@ export default function HomeScreen() {
       </View>
 
       {/* Products */}
-      <FlatList
-        data={products}
-        renderItem={renderProduct}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        contentContainerStyle={styles.productList}
-        showsVerticalScrollIndicator={false}
-      />
+      {products.length === 0 ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Text style={{ color: "#999", fontSize: 16 }}>Nenhum produto encontrado</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={products}
+          renderItem={renderProduct}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          contentContainerStyle={styles.productList}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </SafeAreaView>
   )
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -144,7 +178,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: "hidden",
   },
-  productImage: {
+  productimagem: {
     width: "100%",
     height: 150,
     backgroundColor: "#2a2a2a",
@@ -167,5 +201,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#fff",
     fontWeight: "600",
+  },
+  retryButton: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: "#000",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 })

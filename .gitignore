@@ -1,34 +1,73 @@
-# Expo
-.expo/
-dist/
-web-build/
+# OSX
+.DS_Store
+
+# Xcode
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace
+
+# Android/IntelliJ
+build/
+.idea
+.gradle
+local.properties
+*.iml
+*.hprof
+.cxx/
+*.apk
+*.ap_
+*.aab
 
 # Node
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+npm-debug.log
+yarn-error.log
 
-# Environment
+# Bundle artifacts
+*.jsbundle
+
+# CocoaPods
+/ios/Pods/
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Environment variables
 .env
 .env.local
 .env.production
 
-# OS
-.DS_Store
-*.log
+# Temporary files
+*.orig.*
+web-report/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# @generated expo-cli
+/@generated/
 
-# Build
-*.apk
-*.ipa
-*.app
+# Next.js (not needed for React Native)
+/.next/
+/out/
 
-# Next.js (não usado no Expo)
-.next/
-out/
+# Vercel
+.vercel
+
+# Typescript
+*.tsbuildinfo
+next-env.d.ts
